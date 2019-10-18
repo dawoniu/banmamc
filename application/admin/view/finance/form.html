@@ -1,0 +1,77 @@
+{include file="public/meta" /}
+
+<title>{$title} - 提现管理</title>
+<meta name="keywords" content="{$keywords}">
+<meta name="description" content="{$description}">
+</head>
+<body>
+<article class="page-container">
+	<form class="form form-horizontal" id="form-article-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">小区团长：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" disabled value="{$data.linkman}" id="linkman" name="linkman">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">团长联系电话：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" disabled value="{$data.phone}" id="phone" name="phone">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">开户行：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" disabled value="{$data.bank}" id="bank" name="bank">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">开户人：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" disabled value="{$data.owner}" id="owner" name="owner">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">银行卡号：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" disabled value="{$data.banknumber}" id="banknumber" name="banknumber">
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2" style="display: flex; justify-content: space-between;">
+				<button class="btn btn-primary radius" onclick="finance_do(1,{$id})" type="button"><i class="Hui-iconfont">&#xe632;</i>已成功打钱</button>
+				<button class="btn btn-default radius" onclick="finance_do(2,{$id})" type="button">&nbsp;&nbsp;拒绝&nbsp;&nbsp;</button>
+			</div>
+		</div>
+	</form>
+</article>
+{include file="public/footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/admin/lib//jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib//jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib//jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+	function finance_do(status,id) {
+        $.ajax({
+            url:"{:url('')}",
+            type:"POST",
+            async: false,
+            data:{"status":status,"id":id},
+            dataType:"json",
+            success:data=> {
+                //console.log(data);
+                if(data.status==1){
+                    alert(data.message);
+                    //会关闭当前页面，并刷新父页面
+                    window.parent.location.reload();
+                }else {
+                    alert(data.message);
+                }
+            }
+        });
+    }
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

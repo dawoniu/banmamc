@@ -1,0 +1,102 @@
+{include file="public/meta" /}
+<title>优惠券管理 - {$title}</title>
+<meta name="keywords" content="{$title}">
+<meta name="description" content="{$title}">
+</head>
+<body>
+<article class="cl pd-20">
+	<form action="{:url('add')}" method="post" class="form form-horizontal" id="form-admin-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>优惠券名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$coupon.name|default=''}" placeholder="" id="name" name="name">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>优惠券金额：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$coupon.amount|default=''}" placeholder="请输入正整数" id="amount" name="amount">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>限额（满多少可用）：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$coupon.quota|default=''}" placeholder="满多少可用" id="quota" name="quota">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>有效时间范围：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" name="start_time" value="{if isset($coupon)}{$coupon.start_time|date='Y-m-d H:i',###}{/if}" {literal} onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm' })" {/literal} id="logmin" class="input-text Wdate" style="width:180px;">
+				-
+				<input type="text" name="end_time" value="{if isset($coupon)}{$coupon.end_time|date='Y-m-d H:i',###}{/if}" {literal} onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm' })" {/literal} id="logmax" class="input-text Wdate" style="width:180px;">
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				{if condition="isset($coupon)"}<input type="hidden" name="id" value="{$coupon.id}">{/if}
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+			</div>
+		</div>
+	</form>
+</article>
+
+{include file="public/footer"}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib//jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="__STATIC__/admin/lib//jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="__STATIC__/admin/lib//jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	
+	$("#form-admin-add").validate({
+		rules:{
+            name:{
+				required:true,
+			},
+            amount:{
+				required:true,
+			},
+            quota:{
+				required:true,
+			},
+            start_time:{
+                required:true,
+            },
+            end_time:{
+                required:true,
+            },
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+            $.ajax({
+                url:"{:url('')}",
+                type:"POST",
+                async: false,
+                data:$("form").serialize(),
+                dataType:"json",
+                success:function (data) {
+                    if(data.status==1){
+                        alert(data.message);
+                        window.parent.location.reload();
+                    }else {
+                        alert(data.message);
+                    }
+                }
+            });
+		}
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

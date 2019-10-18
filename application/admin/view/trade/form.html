@@ -1,0 +1,254 @@
+{include file="public/meta" /}
+
+<title>{$title} - 用户管理</title>
+<meta name="keywords" content="{$keywords}">
+<meta name="description" content="{$description}">
+</head>
+<body>
+<article class="page-container">
+	<form class="form form-horizontal" id="form-article-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>文章标题：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$data.title|default=''}" placeholder="" id="title" name="title">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>文章摘要：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<textarea name="brief" cols="" rows="" class="textarea" id="brief" placeholder="说点什么...最少输入10个字符,最多200个字符" datatype="*10-200" dragonfly="true" nullmsg="备注不能为空！">{$data.brief|default=''}</textarea>
+				<!--<p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>-->
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>分类栏目：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select name="lanmu_id" class="select">
+					{foreach $lanmu as $v}
+					<option value="{$v.id}" {if condition="isset($data.lanmu_id) and $data.lanmu_id eq $v.id"} selected {/if}>{$v.name}</option>
+					{/foreach}
+				</select>
+				</span> </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">页面关键词：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$data.keyword|default=''}" placeholder="" id="keyword" name="keyword">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">页面描述：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$data.description|default=''}" placeholder="" id="description" name="description">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">文章作者：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$data.author|default=''}" placeholder="" id="author" name="author">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">缩略图：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<div class="uploader-thum-container">
+					<div id="fileList" class="uploader-list">
+						{if condition="isset($data.picture) and $data.picture neq ''"}
+						<div class="pic-box"><img src="/uploads/{$data.picture}"></div>
+						{/if}
+					</div>
+					<div id="filePicker">选择图片</div>
+					<!--<button id="btn-star" type="button" class="btn btn-default btn-uploadstar radius ml-10">开始上传</button>-->
+					<input type="hidden" value="{$data.picture|default=''}" id="picture" name="picture">
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">文章内容：</label>
+			<div class="formControls col-xs-8 col-sm-9"> 
+				<script id="editor" type="text/plain" style="width:100%; height:400px;">{$data.content|default=''}</script>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				{if condition="isset($data.id)"}<input type="hidden" name="id" value="{$data.id}" />{/if}
+				<button  class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 提交</button>
+				<button onClick="removeIframe();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+		</div>
+	</form>
+</article>
+{include file="public/footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="__STATIC__/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="__STATIC__/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/webuploader/0.1.5/webuploader.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/ueditor/1.4.3/ueditor.config.js"></script> 
+<script type="text/javascript" src="__STATIC__/admin/lib/ueditor/1.4.3/ueditor.all.min.js"> </script> 
+<script type="text/javascript" src="__STATIC__/admin/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">
+    $(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	
+	//表单验证
+	$("#form-article-add").validate({
+		rules:{
+			title:{
+				required:true,
+			},
+            brief:{
+                required:true,
+                minlength:10,
+                maxlength:300
+			},
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+            $.ajax({
+                url:"{:url('')}",
+                type:"POST",
+                async: false,
+                data:$("form").serialize(),
+                dataType:"json",
+                success:function (data) {
+                    //console.log(data);
+                    if(data.status==1){
+                        alert(data.message);
+                        //添加修改文章成功时，会关闭当前页面，并刷新父页面
+                        window.parent.location.reload();
+                    }else {
+                        alert(data.message);
+                    }
+                }
+            });
+			// //$(form).ajaxSubmit();
+			// var index = parent.layer.getFrameIndex(window.name);
+			// //parent.$('.btn-refresh').click();
+			// parent.layer.close(index);
+		}
+	});
+	
+	$list = $("#fileList"),
+	$btn = $("#btn-star"),
+	state = "pending",
+	uploader;
+
+	var uploader = WebUploader.create({
+		auto: true,
+		swf: '__STATIC__/admin/lib/webuploader/0.1.5/Uploader.swf',
+        //下面的duplicate是设置图片可以重复上传，如果不设置那么原来上传的图片，是不能上传的，点了没反应
+        duplicate: true,
+		// 文件接收服务端。
+		server: '{:url("upload")}',
+	
+		// 选择文件的按钮。可选。
+		// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+		pick: '#filePicker',
+	
+		// 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+		resize: false,
+		// 只允许选择图片文件。
+		accept: {
+			title: 'Images',
+			extensions: 'gif,jpg,jpeg,bmp,png',
+			mimeTypes: 'image/*'
+		}
+	});
+	uploader.on( 'fileQueued', function( file ) {
+		var $li = $(
+			'<div id="' + file.id + '" class="item">' +
+				'<div class="pic-box"><img></div>'+
+				'<div class="info">' + file.name + '</div>' +
+				'<p class="state">等待上传...</p>'+
+			'</div>'
+		),
+		$img = $li.find('img');
+		//$list.append( $li );
+        $list.html( $li );
+	
+		// 创建缩略图
+		// 如果为非图片文件，可以不用调用此方法。
+		// thumbnailWidth x thumbnailHeight 为 100 x 100
+		uploader.makeThumb( file, function( error, src ) {
+			if ( error ) {
+				$img.replaceWith('<span>不能预览</span>');
+				return;
+			}
+	
+			$img.attr( 'src', src );
+		}, 1, 1 );
+	});
+	// 文件上传过程中创建进度条实时显示。
+	uploader.on( 'uploadProgress', function( file, percentage ) {
+		var $li = $( '#'+file.id ),
+			$percent = $li.find('.progress-box .sr-only');
+	
+		// 避免重复创建
+		if ( !$percent.length ) {
+			$percent = $('<div class="progress-box"><span class="progress-bar radius"><span class="sr-only" style="width:0%"></span></span></div>').appendTo( $li ).find('.sr-only');
+		}
+		$li.find(".state").text("上传中");
+		$percent.css( 'width', percentage * 100 + '%' );
+	});
+	
+	// 文件上传成功，给item添加成功class, 用样式标记上传成功。
+	uploader.on( 'uploadSuccess', function( file,response ) {
+	    //console.log(response);
+		if(response.status==1){
+            $( '#'+file.id ).addClass('upload-state-success').find(".state").text("已上传");
+            $("#picture").val(response.path);
+		}else{
+            $( '#'+file.id ).addClass('upload-state-error').find(".state").text("上传出错");
+		}
+
+	});
+	
+	// 文件上传失败，显示上传出错。
+	uploader.on( 'uploadError', function( file ) {
+		$( '#'+file.id ).addClass('upload-state-error').find(".state").text("上传出错");
+	});
+	
+	// 完成上传完了，成功或者失败，先删除进度条。
+	uploader.on( 'uploadComplete', function( file ) {
+		$( '#'+file.id ).find('.progress-box').fadeOut();
+	});
+	uploader.on('all', function (type) {
+        if (type === 'startUpload') {
+            state = 'uploading';
+        } else if (type === 'stopUpload') {
+            state = 'paused';
+        } else if (type === 'uploadFinished') {
+            state = 'done';
+        }
+
+        if (state === 'uploading') {
+            $btn.text('暂停上传');
+        } else {
+            $btn.text('开始上传');
+        }
+    });
+
+    $btn.on('click', function () {
+        if (state === 'uploading') {
+            uploader.stop();
+        } else {
+            uploader.upload();
+        }
+    });
+	
+	var ue = UE.getEditor('editor');
+	
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

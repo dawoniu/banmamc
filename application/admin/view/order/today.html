@@ -1,0 +1,118 @@
+﻿{include file='public/meta' /}
+	<title>今日订单管理</title>
+	<link rel="stylesheet" href="__STATIC__/admin/static/layui/css/layui.css" type="text/css">
+	<style>
+		.layui-form-select{
+			width:200px;
+			display: inline-block;
+		}
+		.layui-form-select input{
+			height:31px;
+			display: inline-block;
+		}
+	</style>
+	<link rel="stylesheet" href="__STATIC__/admin/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+</head>
+<body class="pos-r">
+<div>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span class="c-gray en">&gt;</span> 今日订单列表
+		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px; margin-right: 10px;" href="javascript:void(0);" onclick="daochu()" title="导出数据" >导出数据</a>
+	</nav>
+	<div class="page-container">
+		<div class="text-c">
+			<form action="{:url('')}" method="get" class="layui-form">
+			<button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button>
+			<select name="group_id" lay-verify="" lay-search>
+				<option value="">按所属业务员检索</option>
+				{foreach $group as $v}
+				<option value="{$v.id}" {if condition="$groupID eq $v.id"}selected{/if}>{$v.linkman}</option>
+				{/foreach}
+			</select>
+
+			<input type="text" name="keyword" value="{$keyword|default=''}" placeholder="订单号" style="width:250px" class="input-text">
+			<button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜订单</button>
+			</form>
+		</div>
+		<div class="cl pd-5 bg-1 bk-gray mt-20"><span class="r">共有数据：<strong>{$count}</strong> 条</span> </div>
+		<div class="mt-20">
+			<table class="table table-border table-bordered table-bg table-hover table-sort">
+				<thead>
+				<tr class="text-c">
+					<th width="40">ID</th>
+					<th width="90">订单号</th>
+					<th>订单商品</th>
+					<th width="80">联系人</th>
+					<th width="80">联系手机</th>
+					<th width="80">订单备注</th>
+					<th width="70">下单时间</th>
+					<th width="60">总价</th>
+					<th width="60">佣金总金额</th>
+					<th width="60">状态</th>
+					<th width="100">所属业务员</th>
+				</tr>
+				</thead>
+				<tbody>
+				{foreach $list as $v}
+				<tr class="text-c va-m">
+					<td>{$v.id}</td>
+					<td>{$v.orderSN}</td>
+					<td class="text-l">
+						{foreach $v.detail as $vo}
+						{$vo.objTitle} x{$vo.count}<br>
+						{/foreach}
+					</td>
+					<td>{$v.linkman}</td>
+					<td>{$v.mobile}</td>
+					<td>{$v.remark}</td>
+					<td>{$v.create_time|date='Y-m-d H:i:s',###}</td>
+					<td><span class="price">{$v.sumTotal}</span> 元</td>
+					<td><span class="price">{$v.bonusTotal}</span> 元</td>
+					<td class="td-status">
+						{if condition="$v.status eq 0"}
+						<span class="label label-success radius">待付款</span>
+						{elseif condition="$v.status eq 1"}
+						<span class="label label-success radius">待发货</span>
+						{elseif condition="$v.status eq 2"}
+						<span class="label label-success radius">已发货</span>
+						{elseif condition="$v.status eq 3"}
+						<span class="label label-success radius">已完成</span>
+						{else /}
+						<span class="label label-defaunt radius">已退货</span>
+						{/if}
+					</td>
+					<td class="td-manage">
+						{$v.glinkman}
+					</td>
+				</tr>
+				{/foreach}
+				</tbody>
+			</table>
+			<div style="float:right;">{$list->render()}</div>
+		</div>
+	</div>
+</div>
+
+{include file="public/footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/admin/static/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/laypage/1.2/laypage.js"></script>
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+    function daochu() {
+        if(confirm('确定要导出数据吗？')){
+            var url="{:url('dataExport')}?method=today&type=1&keyword={$keyword}&group_id={$groupID}";
+            location.href=url;
+        }
+    }
+</script>
+</body>
+</html>

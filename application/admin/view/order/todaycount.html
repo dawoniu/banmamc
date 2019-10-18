@@ -1,0 +1,102 @@
+﻿{include file='public/meta' /}
+	<title>今日销售统计</title>
+	<link rel="stylesheet" href="__STATIC__/admin/static/layui/css/layui.css" type="text/css">
+	<style>
+		.layui-form-select{
+			width:200px;
+			display: inline-block;
+		}
+		.layui-form-select input{
+			height:31px;
+			display: inline-block;
+		}
+	</style>
+	<link rel="stylesheet" href="__STATIC__/admin/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+</head>
+<body class="pos-r">
+<div>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span class="c-gray en">&gt;</span> 今日销售统计
+		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px; margin-right: 10px;" href="javascript:void(0);" onclick="daochu()" title="导出数据" >导出数据</a>
+	</nav>
+	<div class="page-container">
+		<div class="text-c">
+			<form action="{:url('')}" method="get" class="layui-form">
+			<button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button>
+			<select name="group_id" lay-verify="" lay-search>
+				<option value="">按所属业务员检索</option>
+				{foreach $group as $v}
+				<option value="{$v.id}" {if condition="$groupID eq $v.id"}selected{/if}>{$v.linkman}</option>
+				{/foreach}
+			</select>
+			<select name="supplier_id" lay-verify="" lay-search>
+				<option value="">按供应商名检索</option>
+				{foreach $supplier as $v}
+				<option value="{$v.id}" {if condition="$supplierID eq $v.id"}selected{/if}>{$v.name}</option>
+				{/foreach}
+			</select>
+			<input type="text" name="keyword" value="{$keyword|default=''}" placeholder="商品名称" style="width:250px" class="input-text">
+			<button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+			</form>
+		</div>
+		<div class="cl pd-5 bg-1 bk-gray mt-20"><span class="l">总价：{$data.sumTotal}&nbsp;&nbsp;总佣金：{$data.bonusTotal}&nbsp;&nbsp;供应商总销售：{$data.supplierTotal}</span> <span class="r">共有数据：<strong>{$data.count}</strong> 条</span> </div>
+		<div class="mt-20">
+			<table class="table table-border table-bordered table-bg table-hover table-sort">
+				<thead>
+				<tr class="text-c">
+					<th width="40">商品ID</th>
+					<th>商品名称</th>
+					<th width="30">销量</th>
+					<th width="80">单价<br>(仅供参考，如果改动过则不准)</th>
+					<th width="80">总价</th>
+					<th width="80">业务员佣金比例<br>(仅供参考，如果改动过则不准)</th>
+					<th width="80">总提成</th>
+					<th width="100">所属供应商</th>
+					<th width="80">供应商单价<br>(仅供参考，如果改动过则不准)</th>
+					<th width="80">供应商总销售</th>
+				</tr>
+				</thead>
+				<tbody>
+				{foreach $data.data as $k=>$v}
+				<tr class="text-c va-m">
+					<td>{$k}</td>
+					<td>{$v.objTitle}</td>
+					<td>{$v.count}</td>
+					<td>{$v.price}</td>
+					<td>{$v.zongjia}</td>
+					<td>{$v.ratio}</td>
+					<td>{$v.zongbonus}</td>
+					<td>{$v.name}</td>
+					<td>{$v.supplierPrice}</td>
+					<td>{$v.supplierTotal}</td>
+				</tr>
+				{/foreach}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{include file="public/footer" /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/admin/static/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/laypage/1.2/laypage.js"></script>
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+    function daochu() {
+        if(confirm('确定要导出数据吗？')){
+            var url="{:url('dataExport')}?method=today&type=2&keyword={$keyword}&group_id={$groupID}&supplier_id={$supplierID}";
+            location.href=url;
+        }
+    }
+</script>
+</body>
+</html>

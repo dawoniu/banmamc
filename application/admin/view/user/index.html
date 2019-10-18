@@ -1,0 +1,74 @@
+﻿{include file='public/meta' /}
+
+<title>用户列表</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span class="c-gray en">&gt;</span> 文章列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c">
+		<form action="{:url('')}" method="get">
+		<button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button>
+	 	 注册日期范围：
+		<input name="start_time" type="text" {literal} onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })" {/literal} id="logmin" value="{$start_time|default=''}" class="input-text Wdate" style="width:120px;">
+		-
+		<input name="end_time" type="text" {literal} onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })" {/literal} id="logmax" value="{$end_time|default=''}" class="input-text Wdate" style="width:120px;">
+
+		<input type="text" name="keyword" placeholder="微信昵称" style="width:250px" value="{$keyword|default=''}" class="input-text">
+		<button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="r">共有数据：<strong>{$count}</strong> 条</span> </div>
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+			<thead>
+				<tr class="text-c">
+					<th width="80">ID</th>
+					<th width="60">缩略图</th>
+					<th>用户昵称</th>
+					<th width="80">注册时间</th>
+					<th width="120">用户角色</th>
+					<th width="75">状态</th>
+					<th width="120">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach $list as $v}
+				<tr class="text-c">
+					<td>{$v.id}</td>
+					<td><img width="60" class="product-thumb" src="{$v.thumb}" ></td>
+					<td class="text-l">{$v.nickName}</td>
+					<td>{$v.regTime|date='Y-m-d',###}</td>
+					<td>{$v.role}</td>
+					<td>{$v.status}</td>
+					<td class="f-14 td-manage">
+						{if condition='$v.role eq "普通用户"'}
+						<a style="text-decoration:none" class="ml-5" onClick="user_up('用户升级','{:url("user/up","id=".$v.id)}')" href="javascript:;" title="升级">升级成业务员</a>
+						{/if}
+					</td>
+				</tr>
+				{/foreach}
+			</tbody>
+		</table>
+		<div style="float:right;">{$list->render()}</div>
+	</div>
+
+</div>
+{include file="public/footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script type="text/javascript" src="__STATIC__/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+<script type="text/javascript" src="__STATIC__/admin/lib/laypage/1.2/laypage.js"></script>
+
+<script type="text/javascript">
+    /*用户-编辑*/
+    function user_up(title,url){
+        var index = layer.open({
+            type: 2,
+            title: title,
+            content: url
+        });
+        layer.full(index);
+    }
+</script>
+</body>
+</html>

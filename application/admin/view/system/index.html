@@ -1,0 +1,111 @@
+﻿{include file="public/meta" /}
+<title>基本设置</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页
+	<span class="c-gray en">&gt;</span>
+	系统管理
+	<span class="c-gray en">&gt;</span>
+	小程序设置
+	<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<form class="form form-horizontal" id="form-article-add">
+		<div id="tab-system" class="HuiTab">
+			<div class="tabBar cl">
+				<span>小程序设置</span>
+				<!--<span>安全设置</span>-->
+				<!--<span>邮件设置</span>-->
+				<!--<span>其他设置</span>-->
+			</div>
+			<div class="tabCon">
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+						<span class="c-red">*</span>
+						小程序名称：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" name="company" placeholder="请输入小程序名称" value="{$system.company}" class="input-text">
+					</div>
+				</div>
+
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+						<span class="c-red">*</span>
+						满多少可购买：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" name="price" placeholder="请输入限制购买的最小金额" value="{$system.price}" class="input-text">
+					</div>
+				</div>
+
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">
+						<span class="c-red">*</span>
+						是否允许购买：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="radio" name="canbuy" value="1" {if condition="$system.canbuy eq 1"}checked{/if}>可以购买
+						<input type="radio" name="canbuy" value="0" {if condition="$system.canbuy eq 0"}checked{/if}>不可购买
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<input type="hidden" name="id" value="{$system.id}" />
+				<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+				<button onClick="removeIframe();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+		</div>
+	</form>
+</div>
+{include file='public/footer' /}
+<script type="text/javascript" src="__STATIC__/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	$("#tab-system").Huitab({
+		index:0
+	});
+
+    //表单验证
+    $("#form-article-add").validate({
+        rules:{
+            // title:{
+            //     required:true,
+            // },
+            // brief:{
+            //     required:true,
+            //     minlength:10,
+            //     maxlength:200
+            // },
+        },
+        onkeyup:false,
+        focusCleanup:true,
+        success:"valid",
+        submitHandler:function(form){
+            $.ajax({
+                url:"{:url('')}",
+                type:"POST",
+                async: false,
+                data:$("form").serialize(),
+                dataType:"json",
+                success:function (data) {
+                    if(data.status==1){
+                        alert(data.message);
+                        removeIframe();
+                    }else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+    });
+
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

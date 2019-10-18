@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+  Options +FollowSymlinks -Multiviews
+  RewriteEngine On
+
+  ##如果不是目录，才会执行下一条RewriteRule
+  RewriteCond %{REQUEST_FILENAME} !-d
+  ##如果不是文件，才会执行下一条RewriteRule
+  RewriteCond %{REQUEST_FILENAME} !-f
+  ##会把http://www.tp5hui.com/index/categ 解析成http://www.tp5hui.com/index.php/index/categ
+  RewriteRule ^(.*)$ \index.php?$1 [QSA,PT,L]
+
+</IfModule>
+
+
